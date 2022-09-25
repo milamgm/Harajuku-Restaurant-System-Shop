@@ -1,0 +1,27 @@
+@use "../abstracts" as *;
+
+@each $key, $color in $colors {
+    .btn-#{$key}{
+        @include btn($color);
+    }
+}
+.cart-btn-div{
+    .cart-item-counter {
+        background-color: $danger;
+        width: 30px;
+        height: 30px;
+        border-radius: 20px;
+        text-align: center;
+        color: $light;
+        font-size: 1.2rem;
+        font-weight: 300;
+        z-index: 1;
+      }
+      .cart-btn{
+        @include layout-btn($primary);
+       
+    }
+}
+.ordered-items-btn{
+    @include layout-btn($primary);
+}

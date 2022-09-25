@@ -1,0 +1,21 @@
+.show-item{
+    .show-item-header-content{
+        display: flex;
+        width: 30rem;
+        justify-content: space-between;
+        align-items: center;
+        .show-item-header-span{
+            margin-right: 1rem;
+        }
+    }
+    .show-item-body{
+        text-align: center;
+        img{
+         width: 80%;
+        }
+        button{
+         margin-top: .3rem;
+         margin-bottom: 1.5rem;
+        }
+     }
+}

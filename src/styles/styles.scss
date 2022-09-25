@@ -1,0 +1,11 @@
+@use "./components/buttons";
+@use "./components/showItem";
+
+.ordered-item{
+    height: 2.5rem;
+    margin-top: 5px;
+    img{
+        width: 2.5rem;
+        margin-right: 15px;
+    }
+}
