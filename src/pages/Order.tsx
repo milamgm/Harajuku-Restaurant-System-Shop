@@ -35,7 +35,7 @@ const Order = () => {
 
     return acc;
   }, []);
-console.log(products)
+
   useEffect(() => {
     onSnapshot(collection(db, "products"), (snapshot) => {
       setProducts([]);
@@ -44,7 +44,7 @@ console.log(products)
       });
     });
   }, []);
-  console.log(products)
+
   return (
     <>
       <NavBar />

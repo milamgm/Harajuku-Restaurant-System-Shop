@@ -31,8 +31,8 @@ const OrderedItemsWidget = () => {
               <Row className="mt-4">
                 {onCookingItemsFetch.length > 0 &&
                   onCookingItemsFetch.map((item) => (
-                    <Col sm="5">
-                      <OrderedItemsItem key={item.id} {...item} />
+                    <Col sm="12" lg="6">
+                      <OrderedItemsItem key={item.id} {...item} cssClass="onCooking-item"/>
                     </Col>
                   ))}
               </Row>
@@ -43,8 +43,8 @@ const OrderedItemsWidget = () => {
                   <h5>Completed Items</h5>
                   <Row className="mt-4">
                     {completedItemsFetch.map((item) => (
-                      <Col sm="5">
-                        <OrderedItemsItem key={item.id} {...item} />
+                      <Col sm="12" lg="6">
+                        <OrderedItemsItem key={item.id} {...item} cssClass="completed-item" />
                       </Col>
                     ))}
                   </Row>

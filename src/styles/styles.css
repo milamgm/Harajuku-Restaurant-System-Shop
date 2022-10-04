@@ -175,11 +175,34 @@
   margin-bottom: 1.5rem;
 }
 
-.ordered-item {
+.onCooking-item {
+  background-color: rgb(71, 157, 255);
+  border-radius: 0.6rem;
+  padding: 1.5rem;
+  color: rgb(203, 203, 203);
   height: 2.5rem;
   margin-top: 5px;
 }
-.ordered-item img {
+.onCooking-item img {
   width: 2.5rem;
   margin-right: 15px;
+}
+.onCooking-item span {
+  color: rgb(203, 203, 203);
+}
+
+.completed-item {
+  background-color: rgb(203, 203, 203);
+  border-radius: 0.6rem;
+  padding: 1.5rem;
+  color: rgb(31, 31, 31);
+  height: 2.5rem;
+  margin-top: 5px;
+}
+.completed-item img {
+  width: 2.5rem;
+  margin-right: 15px;
+}
+.completed-item span {
+  color: rgb(31, 31, 31);
 }/*# sourceMappingURL=styles.css.map */

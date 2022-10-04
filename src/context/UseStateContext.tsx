@@ -1,6 +1,5 @@
 import { useContext, createContext, useState, useEffect, useRef } from "react";
 import toast, { Toast, Toaster } from "react-hot-toast";
-import items from "../data/items.json";
 import settings from "../data/settings.json";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { setDoc, doc, onSnapshot } from "firebase/firestore";
@@ -13,11 +12,13 @@ type CartItem = {
   id: number;
   name: string;
   quantity: number;
+  price: number;
 };
 type OrderedItem = {
   id: number;
   name: string;
   quantity: number;
+  price: number;
 };
 
 //VARS
@@ -86,7 +87,7 @@ export const UseStateContext = ({ children }) => {
         if (exists) {
           return accum.map((elem) => {
             if (elem.id === curr.id) {
-              return { ...elem, quantity: elem.quantity + curr.quantity };
+              return { ...elem, quantity: elem.quantity + curr.quantity, price: elem.price + curr.price };
             }
             return elem;
           });
@@ -102,17 +103,32 @@ export const UseStateContext = ({ children }) => {
   const getItemQuantity = (id: number) => {
     return cartItems.find((item) => item.product_id === id)?.quantity || null;
   };
+  console.log(cartItems);
   const incrementQuantity = (id: number, name: string) => {
     setCartItems((prevCartItems) => {
       if (prevCartItems.find((item) => item.id === id)?.quantity == null) {
-        toast(`Added ${products.find((item) => item.product_id === id)?.product_name} to cart`, {
-          duration: 1000,
-        });
+        toast(
+          `Added ${
+            products.find((item) => item.product_id === id)?.product_name
+          } to cart`,
+          {
+            duration: 1000,
+          }
+        );
         if (cartItems.length == 0) {
           setActiveCounter(true);
         }
         setCartContainer(false);
-        return [...prevCartItems, { id: id, name: name, quantity: 1 }];
+        return [
+          ...prevCartItems,
+          {
+            id: id,
+            name: name,
+            quantity: 1,
+            price: products.find((item) => item.product_id === id)
+              ?.product_price,
+          },
+        ];
       } else {
         setSendToOrder(false);
         return prevCartItems.map((item) => {
@@ -126,7 +142,14 @@ export const UseStateContext = ({ children }) => {
             if (counter.minutes == 0 && counter.seconds < 30) {
               setCounter((prev) => ({ ...prev, seconds: prev.seconds + 29 }));
             }
-            return { ...item, quantity: item.quantity + 1 };
+            return {
+              ...item,
+              quantity: item.quantity + 1,
+              price: 
+                products.find((item) => item.product_id === id)?.product_price *
+                (item.quantity + 1)
+              ,
+            };
           } else {
             return item;
           }
@@ -138,7 +161,9 @@ export const UseStateContext = ({ children }) => {
     setCartItems((prevCartItems) => {
       if (prevCartItems.find((item) => item.id === id)?.quantity == 1) {
         toast(
-          `Removed ${products.find((item) => item.product_id === id)?.product_name} from cart`,
+          `Removed ${
+            products.find((item) => item.product_id === id)?.product_name
+          } from cart`,
           { duration: 1000 }
         );
         return prevCartItems.filter((item) => item.id != id);
@@ -151,7 +176,12 @@ export const UseStateContext = ({ children }) => {
               }`,
               { duration: 1000 }
             );
-            return { ...item, quantity: item.quantity - 1 };
+            return {
+              ...item,
+              quantity: item.quantity - 1,
+              price:
+                item.price - (products.find((item) => item.product_id === id)?.product_price),
+            };
           } else {
             return item;
           }

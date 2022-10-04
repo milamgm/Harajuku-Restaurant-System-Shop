@@ -3,7 +3,6 @@ import { NavLink } from "react-router-dom";
 import items from "../data/items.json";
 import CartWidget from "./CartWidget/CartWidget";
 import { HashLink as Link } from "react-router-hash-link";
-import CompletedItemsWidget from "./CompletedItemsWidget/CompletedItemsWidget";
 
 const NavBar = () => {
   const it = [];
@@ -23,9 +22,6 @@ const NavBar = () => {
                 {item}
               </Nav.Link>
             ))}
-            <DropdownButton id="checkout-dropdown-button" title="Checkout" variant="outline-info">
-              <Dropdown.Item href="#/action-1"><CompletedItemsWidget/></Dropdown.Item>
-            </DropdownButton>
           </Nav>
           <CartWidget />
         </Container>

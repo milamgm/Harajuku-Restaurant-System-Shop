@@ -43,3 +43,18 @@
             background-color: mix(#656565, $color, 50%);
         }
 }
+@mixin orderedItem($bgColor, $fnColor ) {
+        background-color: $bgColor;
+        border-radius: .6rem;
+        padding: 1.5rem;
+        color: $fnColor;
+        height: 2.5rem;
+        margin-top: 5px;
+        img{
+            width: 2.5rem;
+            margin-right: 15px;
+        }
+        span{
+                color: $fnColor;
+        }
+}
