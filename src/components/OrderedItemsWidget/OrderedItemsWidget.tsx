@@ -1,9 +1,7 @@
 import { useCartContext } from "../../context/UseStateContext";
 import { Col, Container, Offcanvas, Row } from "react-bootstrap";
 import OrderedItemsItem from "./OrderedItemsItem";
-import { doc, onSnapshot } from "firebase/firestore";
-import { useEffect, useState } from "react";
-import db from "../../firebase/firebaseConfig.js";
+import { itemProps } from "../../types/types";
 
 const OrderedItemsWidget = () => {
   const {
@@ -13,7 +11,6 @@ const OrderedItemsWidget = () => {
     onCookingItemsFetch,
     completedItemsFetch,
   } = useCartContext();
-
   return (
     <Container>
       <Offcanvas
@@ -30,7 +27,7 @@ const OrderedItemsWidget = () => {
               <h5>Being prepared now...</h5>
               <Row className="mt-4">
                 {onCookingItemsFetch.length > 0 &&
-                  onCookingItemsFetch.map((item) => (
+                  onCookingItemsFetch.map((item : itemProps) => (
                     <Col sm="12" lg="6">
                       <OrderedItemsItem key={item.id} {...item} cssClass="onCooking-item"/>
                     </Col>
@@ -42,14 +39,14 @@ const OrderedItemsWidget = () => {
                 <div>
                   <h5>Completed Items</h5>
                   <Row className="mt-4">
-                    {completedItemsFetch.map((item) => (
+                    {completedItemsFetch.map((item : itemProps) => (
                       <Col sm="12" lg="6">
                         <OrderedItemsItem key={item.id} {...item} cssClass="completed-item" />
                       </Col>
                     ))}
                   </Row>
                 </div>
-              )}{" "}
+              )}
             </Col>
           </Row>
         </Offcanvas.Body>

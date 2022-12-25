@@ -1,5 +1,5 @@
 import Order from "./Order";
-import { Button, Container } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import cookinggif from "../../public/imgs/cooking.gif";
 import see_my_items from "../../public/imgs/see_my_items.svg"
 import basket from "../../public/imgs/basket.png";
@@ -10,11 +10,9 @@ import Footer from "../components/Footer";
 const Layout = () => {
   const {
     toggleOrderContainer,
-    orderContainer,
     toggleCartContainer,
     cartItems,
     cartQuantity,
-    orderedItems,
     onCookingItemsFetch,
     completedItemsFetch,
   } = useCartContext();

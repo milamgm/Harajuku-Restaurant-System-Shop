@@ -1,6 +1,7 @@
 import { Button, Card, Container, Modal } from "react-bootstrap";
 import { useCartContext } from "../context/UseStateContext";
 import { useState } from "react";
+import { itemProps, productProps } from "../types/types";
 
 const StoreItem = ({
   product_id,
@@ -8,16 +9,20 @@ const StoreItem = ({
   product_price,
   product_img,
   product_description,
-}) => {
+}: productProps) => {
   const [expandItem, setExpandItem] = useState(false);
   const {
     cartItems,
-    getItemQuantity,
     incrementQuantity,
     decrementQuantity,
     removeItem,
   } = useCartContext();
-  const quantity = getItemQuantity(product_id);
+
+  //Takes the quantity of the item if this exists in the cart.
+  const quantity = cartItems.find(
+    (item: itemProps) => item.id === product_id
+  )?.quantity || null;
+
   return (
     <Container>
       <Card key={product_id} className="h-100 shadow">

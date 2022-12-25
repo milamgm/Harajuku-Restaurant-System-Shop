@@ -1,25 +1,32 @@
-import { Button, Container, Navbar, Nav, Alert, Dropdown, DropdownButton } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
-import items from "../data/items.json";
+import { Container, Navbar, Nav } from "react-bootstrap";
 import CartWidget from "./CartWidget/CartWidget";
 import { HashLink as Link } from "react-router-hash-link";
+import { productProps } from "../types/types";
+import { useCartContext } from "../context/UseStateContext";
 
 const NavBar = () => {
-  const it = [];
-  items.map((item) => it.push(item.type));
-  const itemsType = new Set(it);
+  const { products } = useCartContext();
+
+  //Creates an array with the product categories. Then create a set with it to eliminate duplicates.
+  const itemsCategory = new Set<string>(
+    products.reduce((categories: string[], product: productProps) => {
+      categories.push(product.product_category);
+      return categories;
+    }, [])
+  );
+
   return (
     <>
       <Navbar sticky="top" className="bg-white shadow-sm mb-3">
         <Container className="d-flex aligns-items-center justify-content-center">
           <Nav>
-            {[...itemsType].map((item) => (
+            {[...itemsCategory].map((category) => (
               <Nav.Link
                 as={Link}
-                key={item}
-                to={{ pathname: "/", hash: `#${item}` }}
+                key={category}
+                to={{ pathname: "/", hash: `#${category}` }}
               >
-                {item}
+                {category}
               </Nav.Link>
             ))}
           </Nav>

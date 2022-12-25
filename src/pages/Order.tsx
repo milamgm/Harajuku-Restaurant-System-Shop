@@ -1,46 +1,45 @@
 import NavBar from "../components/NavBar";
-import items from "../data/items.json";
 import StoreItem from "../components/StoreItem";
-import { Container, Row, Col, Carousel, Button } from "react-bootstrap";
+import { Container, Row, Carousel, Button } from "react-bootstrap";
 import carousel from "../data/carousel.json";
-import { HashLink as Link } from "react-router-hash-link";
 import { collection, onSnapshot } from "firebase/firestore";
-import db from "../firebase/firebaseConfig"
-import Footer from "../components/Footer";
-import { useEffect, useState } from "react";
-import { useCartContext, UseStateContext } from "../context/UseStateContext";
+import db from "../firebase/firebaseConfig";
+import { useEffect } from "react";
+import { useCartContext } from "../context/UseStateContext";
+import { productProps } from "../types/types";
 
-type items = {
-  id: number;
-  name: string;
-  price: number;
-  imgUrl: string;
-  type: string;
+type categorizedDataAcumProps = {
+  [key: string]: object[];
 };
+
 const Order = () => {
-  const {products, setProducts} = useCartContext()
-  //Group items array by type (associative)
-  const categorizedData = products.reduce((acc, curr) => {
-    const { product_id, product_category, product_name, product_price, product_img, product_description } = curr;
-    if (!acc[product_category]) {
-      acc[product_category] = [];
-    }
-    acc[product_category].push({
-      product_id: product_id,
-      product_name: product_name,
-      product_price: product_price,
-      product_img: product_img,
-      product_description: product_description,
-    });
+  const { products, setProducts } = useCartContext();
 
-    return acc;
-  }, []);
+  //Group items by type in an array (associative) to display them.
+  const categorizedData = products.reduce(
+    (acc: categorizedDataAcumProps, curr: productProps) => {
+      const { product_category } = curr;
+      if (!acc[product_category]) {
+        acc[product_category] = [];
+      }
+      acc[product_category].push(
+        Object.fromEntries(
+          Object.entries(curr).filter(
+            (key) => !key.includes("product_category")
+          )
+        )
+      );
+      return acc;
+    },
+    []
+  );
 
+  //Fetching Products from database.
   useEffect(() => {
     onSnapshot(collection(db, "products"), (snapshot) => {
       setProducts([]);
       snapshot.docs.forEach((doc) => {
-        setProducts((prevProducts : any) => [...prevProducts, doc.data()]);
+        setProducts((prevProducts: any) => [...prevProducts, doc.data()]);
       });
     });
   }, []);
@@ -60,13 +59,8 @@ const Order = () => {
               <Carousel.Caption>
                 <h3>{item.title}</h3>
                 <p>{item.description}</p>
-                <Button
-                  as={Link}
-                  size="sm"
-                  variant="danger"
-                  to={{ pathname: "/", hash: `#${item.title}` }}
-                >
-                  Go To Item
+                <Button variant="info">
+                  <a href={`#${item.title}`}>Go To Item</a>
                 </Button>
               </Carousel.Caption>
             </Carousel.Item>
@@ -78,8 +72,12 @@ const Order = () => {
           <div key={key} className="pt-5" id={key}>
             <h1 className="m-4 text-center">{key}</h1>
             <Row md={1} xs={1} lg={2} xl={3} className="g-3">
-              {categorizedData[key].map((item) => (
-                <Container className="mt-5" key={item.product_id} id={item.product_name}>
+              {categorizedData[key].map((item: productProps) => (
+                <Container
+                  className="mt-5"
+                  key={item.product_id}
+                  id={item.product_name}
+                >
                   <StoreItem {...item} />
                 </Container>
               ))}

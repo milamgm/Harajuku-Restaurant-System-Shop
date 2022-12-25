@@ -2,6 +2,7 @@ import { Alert, Modal } from "react-bootstrap";
 import { useCartContext } from "../../context/UseStateContext";
 import CartWidgetItem from "./CartWidgetItem";
 import { GiCheckMark } from "react-icons/gi";
+import { itemProps, onCookingItemsFetchProps } from "../../types/types";
 
 const CartWidget = () => {
   const {
@@ -10,12 +11,17 @@ const CartWidget = () => {
     cartItems,
     counter,
     orderedItems,
-    onCookingItemsFetch
+    onCookingItemsFetch,
   } = useCartContext();
 
-  const totalOrderedItems = onCookingItemsFetch.reduce((total, curr) => {
-    return total + curr.quantity;
-  }, 0);
+
+  //Counts the items that are currently being prepared, for showing it in an Alert
+  const totalOrderedItems = onCookingItemsFetch.reduce(
+    (total: number, curr: onCookingItemsFetchProps) => {
+      return total + curr.quantity;
+    },
+    0
+  );
 
   return (
     <Modal
@@ -33,11 +39,15 @@ const CartWidget = () => {
           </Alert>
         )}
         {cartItems.length > 0 && (
-          <h5>This order will be prepaired in {counter.minutes} : {counter.seconds < 10 ? `0${counter.seconds}` : counter.seconds} minutes.</h5>
+          <h5>
+            This order will be prepaired in {counter.minutes} :
+            {counter.seconds < 10 ? `0${counter.seconds}` : counter.seconds}
+            minutes.
+          </h5>
         )}
         {cartItems.length > 0 &&
-          cartItems.map((item) => (
-            <CartWidgetItem key={item.product_id} {...item} />
+          cartItems.map((item: itemProps) => (
+            <CartWidgetItem key={item.id} {...item} />
           ))}
         {cartItems.length == 0 && (
           <h5 className="text-muted">

@@ -4,82 +4,67 @@ import settings from "../data/settings.json";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { setDoc, doc, onSnapshot } from "firebase/firestore";
 import db from "../firebase/firebaseConfig.js";
+import { itemProps } from "../types/types";
 
-const Context = createContext();
+interface UseStateContextProps {
+  children: JSX.Element;
+}
 
-//TYPES
-type CartItem = {
-  id: number;
-  name: string;
-  quantity: number;
-  price: number;
-};
-type OrderedItem = {
-  id: number;
-  name: string;
-  quantity: number;
-  price: number;
-};
+const Context = createContext({});
 
-//VARS
+//Sets the timer with the minutes provided.
 const { waitingTime } = settings[0];
 
-export const UseStateContext = ({ children }) => {
-  const [products, setProducts] = useState([]);
-  const [orderId, setOrderId] = useState("AQ5495886");
-  const [cartItems, setCartItems] = useLocalStorage<CartItem[]>(
-    "cart-items",
-    []
-  );
-  const [cartContainer, setCartContainer] = useState(false);
-  const [orderAccepted, setOrderAccepted] = useState(false);
+export const UseStateContext = ({ children }: UseStateContextProps) => {
+  const [products, setProducts] = useState([]); //Array of available products (from database)
+  const [orderId, setOrderId] = useState("AQ5495886"); //Contains a string for the order number.
+  const [cartItems, setCartItems] = useLocalStorage("cart-items", []); //Products currently in cart.
+  const [cartContainer, setCartContainer] = useState(false); //Toggles cart container
+  const [orderContainer, setOrderContainer] = useState(false);//Toggles orders view container
+  const [orderAccepted, setOrderAccepted] = useState(false); //Boolean that is true when the products in cart had been sent to kitchen.
+  
+  //Handles the minutes remaining before the products in the cart are automatically sent to the kitchen. (The minuts are specifyed)
   const [counter, setCounter] = useLocalStorage("counter", {
     minutes: Math.floor(waitingTime / 60),
     seconds: Math.floor(waitingTime % 60),
   });
+  //If the cart contains any item, activeCounter will be set to true.
   const [activeCounter, setActiveCounter] = useLocalStorage(
     "active-counter",
     cartItems.length > 0 ? true : false
   );
   const intervalRef = useRef();
+
+  //Fetched data of the products that are currently in kitchen.
   const [onCookingItemsFetch, setCookingItemsFetch] = useState([]);
+    //Fetched data of the products that are already served to the client. 
   const [completedItemsFetch, setCompletedItemsFetch] = useState([]);
-  const [orderContainer, setOrderContainer] = useState(false);
-  const [sendToOrder, setSendToOrder] = useState(false);
-  const [orderedItems, setOrderedItems] = useState<OrderedItem[]>([]);
-  let order: Object;
+
+  
+  const [orderedItems, setOrderedItems] = useState<itemProps[]>([]);
   const date = new Date();
   const [orderOnCookingTime, setOrderOnCookingTime] = useState("");
   const [tableNum, setTableNum] = useLocalStorage("table_num", 0);
-  const cartQuantity = cartItems.reduce((totalQty, currItem) => {
-    return totalQty + currItem.quantity;
-  }, 0);
+  const cartQuantity = cartItems.reduce(
+    (totalQty: number, currItem: itemProps) => {
+      return totalQty + currItem.quantity;
+    },
+    0
+  );
 
-  //FUNCTIONS
-  //OrderedItems to database
-  const sendToKitchen = () => {
-    order = {
+  //Adds items in the cart to the database; they will be displayed in the kitchen app.
+  const sendToKitchen = async () => {
+    await setDoc(doc(db, "activeOrders", orderId), {
       order_id: orderId,
       table_num: tableNum,
       time: orderOnCookingTime === "" ? date.getTime() : orderOnCookingTime,
-      items: [],
-    };
-    orderedItems.map((item) => {
-      order.items.push(item);
+      items: [...orderedItems],
     });
-    //Firebase
-    const addToDB = async () => {
-      await setDoc(doc(db, "activeOrders", order.order_id), {
-        order_id: order.order_id,
-        table_num: order.table_num,
-        time: order.time,
-        items: order.items,
-      });
-    };
-    addToDB();
   };
+
   //CartItems to OrderedItems
   const orderRound = () => {
+    console.log("fjhdskuhfudhsufhi");
     setOrderedItems((prevOrderedItems) => {
       const q = [...onCookingItemsFetch, ...cartItems];
       const dupli = q.reduce((accum, curr) => {
@@ -87,7 +72,11 @@ export const UseStateContext = ({ children }) => {
         if (exists) {
           return accum.map((elem) => {
             if (elem.id === curr.id) {
-              return { ...elem, quantity: elem.quantity + curr.quantity, price: elem.price + curr.price };
+              return {
+                ...elem,
+                quantity: elem.quantity + curr.quantity,
+                price: elem.price + curr.price,
+              };
             }
             return elem;
           });
@@ -99,10 +88,7 @@ export const UseStateContext = ({ children }) => {
     setCartItems([]);
     setOrderAccepted((prevstate) => !prevstate);
   };
-  //Cart Functions
-  const getItemQuantity = (id: number) => {
-    return cartItems.find((item) => item.product_id === id)?.quantity || null;
-  };
+
   console.log(cartItems);
   const incrementQuantity = (id: number, name: string) => {
     setCartItems((prevCartItems) => {
@@ -130,7 +116,7 @@ export const UseStateContext = ({ children }) => {
           },
         ];
       } else {
-        setSendToOrder(false);
+       
         return prevCartItems.map((item) => {
           if (item.id === id) {
             toast(
@@ -145,10 +131,9 @@ export const UseStateContext = ({ children }) => {
             return {
               ...item,
               quantity: item.quantity + 1,
-              price: 
+              price:
                 products.find((item) => item.product_id === id)?.product_price *
-                (item.quantity + 1)
-              ,
+                (item.quantity + 1),
             };
           } else {
             return item;
@@ -157,6 +142,7 @@ export const UseStateContext = ({ children }) => {
       }
     });
   };
+
   const decrementQuantity = (id: number) => {
     setCartItems((prevCartItems) => {
       if (prevCartItems.find((item) => item.id === id)?.quantity == 1) {
@@ -180,7 +166,8 @@ export const UseStateContext = ({ children }) => {
               ...item,
               quantity: item.quantity - 1,
               price:
-                item.price - (products.find((item) => item.product_id === id)?.product_price),
+                item.price -
+                products.find((item) => item.product_id === id)?.product_price,
             };
           } else {
             return item;
@@ -270,7 +257,6 @@ export const UseStateContext = ({ children }) => {
     <Context.Provider
       value={{
         cartItems,
-        getItemQuantity,
         incrementQuantity,
         decrementQuantity,
         removeItem,
