@@ -1,28 +1,38 @@
 import { Button, Card, Container, Modal } from "react-bootstrap";
-import { useCartContext } from "../context/UseStateContext";
+import { useCartContext } from "../context/CartContext";
 import { useState } from "react";
-import { itemProps, productProps } from "../types/types";
+import { IItem, IProduct } from "../types/types";
+import ItemPreview from "./ItemPreview";
 
-const StoreItem = ({
-  product_id,
-  product_name,
-  product_price,
-  product_img,
-  product_description,
-}: productProps) => {
-  const [expandItem, setExpandItem] = useState(false);
+type pickFromIproduct = Pick<
+  IProduct,
+  | "product_id"
+  | "product_name"
+  | "product_price"
+  | "product_img"
+  | "product_description"
+>;
+
+type StoreItemProps = {
+  product: pickFromIproduct;
+};
+
+const StoreItem = ({ product }: StoreItemProps) => {
   const {
-    cartItems,
-    incrementQuantity,
-    decrementQuantity,
-    removeItem,
-  } = useCartContext();
+    product_id,
+    product_name,
+    product_price,
+    product_img,
+    product_description,
+  } = product;
+  const [previewItem, setPreviewItem] = useState(false);
+  const { cartItems, incrementQuantity, decrementQuantity, removeItem } =
+    useCartContext();
 
   //Takes the quantity of the item if this exists in the cart.
-  const quantity = cartItems.find(
-    (item: itemProps) => item.id === product_id
-  )?.quantity || null;
-
+  const quantity =
+    cartItems.find((item: IItem) => item.id === product_id)?.quantity || null;
+ 
   return (
     <Container>
       <Card key={product_id} className="h-100 shadow">
@@ -30,7 +40,7 @@ const StoreItem = ({
           variant="top"
           src={product_img}
           height="200px"
-          onClick={() => setExpandItem(true)}
+          onClick={() => setPreviewItem(true)}
           style={{ objectFit: "cover" }}
         />
         <Card.Body>
@@ -40,30 +50,32 @@ const StoreItem = ({
           </Card.Title>
           <p>{product_description}</p>
           <div className="d-flex justify-content-center align-content-center">
-            {quantity > 0 ? (
+            {quantity && quantity > 0 && (
               <>
                 <Button
                   className="b-2"
-                  onClick={() => decrementQuantity(product_id)}
+                  onClick={() => decrementQuantity(product_id, product_name)}
                 >
                   -
                 </Button>
                 <span className="m-5">{quantity}</span>
                 <Button
                   className="b-2"
-                  onClick={() => incrementQuantity(product_id)}
+                  onClick={() => incrementQuantity(product_id, product_name)}
                 >
                   +
                 </Button>
                 <Button
                   className="b-2"
                   variant="outline-danger"
-                  onClick={() => removeItem(product_id)}
+                  onClick={() => removeItem(product_id, product_name)}
                 >
                   &times;
                 </Button>
               </>
-            ) : (
+            )}
+
+            {quantity === null && (
               <button
                 className="btn-primary"
                 onClick={() => incrementQuantity(product_id, product_name)}
@@ -76,69 +88,13 @@ const StoreItem = ({
         </Card.Body>
       </Card>
 
-      {/* Expand Item */}
-      {expandItem && (
-        <Container>
-          <Modal
-            show={expandItem}
-            onHide={() => setExpandItem((prev) => !prev)}
-            placement="end"
-            centered
-            dialogClassName="200w"
-            className="show-item"
-          >
-            <Modal.Header closeButton className="show-item-header">
-              <div className="show-item-header-content">
-                <Modal.Title>{product_name}</Modal.Title>
-                <span className="show-item-header-span text-muted">
-                  {product_price} €
-                </span>
-              </div>
-            </Modal.Header>
-            <Modal.Body className="show-item-body">
-              <img
-                src={product_img}
-                style={{ objectFit: "cover" }}
-                className="p-2"
-              />
-              <p className="m-4">{product_description}</p>
-              {quantity > 0 ? (
-                <>
-                  <Button
-                    className="b-2"
-                    onClick={() => decrementQuantity(product_id)}
-                  >
-                    -
-                  </Button>
-                  <span className="m-5">{quantity}</span>
-                  <Button
-                    className="b-2"
-                    onClick={() => incrementQuantity(product_id)}
-                  >
-                    +
-                  </Button>
-                  <Button
-                    className="b-2"
-                    variant="outline-danger"
-                    onClick={() => removeItem(product_id)}
-                  >
-                    &times;
-                  </Button>
-                </>
-              ) : (
-                <button
-                  className="btn-primary"
-                  onClick={() => incrementQuantity(product_id)}
-                >
-                  {" "}
-                  + Add to Cart
-                </button>
-              )}
-            </Modal.Body>
-          </Modal>
-        </Container>
-      )}
-      {/* End Expand Item */}
+      {/* Preview Item Modal*/}
+      <ItemPreview
+        previewItem={previewItem}
+        setPreviewItem={setPreviewItem}
+        quantity={quantity}
+        {...product}
+      />
     </Container>
   );
 };

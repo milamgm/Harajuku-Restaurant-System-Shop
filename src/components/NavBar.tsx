@@ -1,15 +1,15 @@
 import { Container, Navbar, Nav } from "react-bootstrap";
 import CartWidget from "./CartWidget/CartWidget";
 import { HashLink as Link } from "react-router-hash-link";
-import { productProps } from "../types/types";
-import { useCartContext } from "../context/UseStateContext";
+import { IProduct } from "../types/types";
+import { useAppContext } from "../context/AppContext";
 
 const NavBar = () => {
-  const { products } = useCartContext();
+  const { products } = useAppContext();
 
   //Creates an array with the product categories. Then create a set with it to eliminate duplicates.
   const itemsCategory = new Set<string>(
-    products.reduce((categories: string[], product: productProps) => {
+    products.reduce((categories: string[], product: IProduct) => {
       categories.push(product.product_category);
       return categories;
     }, [])

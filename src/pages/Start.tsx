@@ -1,15 +1,15 @@
 import React from "react";
 import { Button, Container, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { useCartContext } from "../context/UseStateContext";
+import { useCartContext } from "../context/CartContext";
 
 const Start = () => {
   let navigate = useNavigate();
   let { setTableNum } = useCartContext();
 
-  const handleSubmit = (e) => {
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    setTableNum(e.target[0].value);
+    setTableNum(e.target![0].value);
     navigate("/");
   };
   return (
@@ -24,8 +24,6 @@ const Start = () => {
         <Form.Group
           className="mb-3"
           controlId="formPlace"
-          name="place"
-          required
         >
           <Form.Label>Indoor / Outdoor</Form.Label>
           <Form.Check

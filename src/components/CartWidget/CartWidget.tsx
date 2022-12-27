@@ -1,23 +1,19 @@
 import { Alert, Modal } from "react-bootstrap";
-import { useCartContext } from "../../context/UseStateContext";
+import { useCartContext } from "../../context/CartContext";
 import CartWidgetItem from "./CartWidgetItem";
 import { GiCheckMark } from "react-icons/gi";
-import { itemProps, onCookingItemsFetchProps } from "../../types/types";
+import { IItem, IOnCookingItemsFetch } from "../../types/types";
+import { useAppContext } from "../../context/AppContext";
+import { IAppContext, ICartContext } from "../../types/contextTypes";
 
 const CartWidget = () => {
-  const {
-    cartContainer,
-    toggleCartContainer,
-    cartItems,
-    counter,
-    orderedItems,
-    onCookingItemsFetch,
-  } = useCartContext();
-
+  const { cartItems, counter }: ICartContext = useCartContext();
+  const { cartContainer, setCartContainer, onCookingItemsFetch }: IAppContext =
+    useAppContext();
 
   //Counts the items that are currently being prepared, for showing it in an Alert
   const totalOrderedItems = onCookingItemsFetch.reduce(
-    (total: number, curr: onCookingItemsFetchProps) => {
+    (total: number, curr: IOnCookingItemsFetch) => {
       return total + curr.quantity;
     },
     0
@@ -26,7 +22,7 @@ const CartWidget = () => {
   return (
     <Modal
       show={cartContainer}
-      onHide={() => toggleCartContainer()}
+      onHide={() => setCartContainer((prev: boolean) => !prev)}
       placement="end"
     >
       <Modal.Header closeButton>
@@ -41,17 +37,19 @@ const CartWidget = () => {
         {cartItems.length > 0 && (
           <h5>
             This order will be prepaired in {counter.minutes} :
-            {counter.seconds < 10 ? `0${counter.seconds}` : counter.seconds}
+            {counter.seconds < 10
+              ? ` 0${counter.seconds}`
+              : ` ${counter.seconds}`}{" "}
             minutes.
           </h5>
         )}
         {cartItems.length > 0 &&
-          cartItems.map((item: itemProps) => (
+          cartItems.map((item: IItem) => (
             <CartWidgetItem key={item.id} {...item} />
           ))}
         {cartItems.length == 0 && (
           <h5 className="text-muted">
-            <i>Your cart is empty, add some fresh food here!</i>
+            <i>Your cart is empty, add some fresh food here</i>
           </h5>
         )}
       </Modal.Body>

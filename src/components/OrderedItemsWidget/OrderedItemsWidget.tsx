@@ -1,21 +1,21 @@
-import { useCartContext } from "../../context/UseStateContext";
 import { Col, Container, Offcanvas, Row } from "react-bootstrap";
 import OrderedItemsItem from "./OrderedItemsItem";
-import { itemProps } from "../../types/types";
+import { IItem } from "../../types/types";
+import { useAppContext } from "../../context/AppContext";
 
 const OrderedItemsWidget = () => {
   const {
     orderContainer,
-    toggleOrderContainer,
-    orderedItems,
+    setOrderContainer,
     onCookingItemsFetch,
     completedItemsFetch,
-  } = useCartContext();
+  } = useAppContext();
+
   return (
     <Container>
       <Offcanvas
         show={orderContainer}
-        onHide={() => toggleOrderContainer()}
+        onHide={() => setOrderContainer((prev) => !prev)}
         placement="bottom"
       >
         <Offcanvas.Header closeButton>
@@ -27,9 +27,13 @@ const OrderedItemsWidget = () => {
               <h5>Being prepared now...</h5>
               <Row className="mt-4">
                 {onCookingItemsFetch.length > 0 &&
-                  onCookingItemsFetch.map((item : itemProps) => (
+                  onCookingItemsFetch.map((item: IItem) => (
                     <Col sm="12" lg="6">
-                      <OrderedItemsItem key={item.id} {...item} cssClass="onCooking-item"/>
+                      <OrderedItemsItem
+                        key={item.id}
+                        {...item}
+                        cssClass="onCooking-item"
+                      />
                     </Col>
                   ))}
               </Row>
@@ -39,9 +43,13 @@ const OrderedItemsWidget = () => {
                 <div>
                   <h5>Completed Items</h5>
                   <Row className="mt-4">
-                    {completedItemsFetch.map((item : itemProps) => (
+                    {completedItemsFetch.map((item: IItem) => (
                       <Col sm="12" lg="6">
-                        <OrderedItemsItem key={item.id} {...item} cssClass="completed-item" />
+                        <OrderedItemsItem
+                          key={item.id}
+                          {...item}
+                          cssClass="completed-item"
+                        />
                       </Col>
                     ))}
                   </Row>

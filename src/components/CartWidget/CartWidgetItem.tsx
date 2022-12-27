@@ -1,17 +1,20 @@
-import { Button, Stack } from "react-bootstrap";
-import { useCartContext } from "../../context/UseStateContext";
+import { Stack } from "react-bootstrap";
+import { useAppContext } from "../../context/AppContext";
+import { useCartContext } from "../../context/CartContext";
+import { ICartContext } from "../../types/contextTypes";
+import { IProduct } from "../../types/types";
 
 interface CartWidgetItemProps {
   id: number;
   quantity: number;
 }
 
-const CartWidgetItem = ({ id, quantity } : CartWidgetItemProps) => {
-  const { removeItem, incrementQuantity, decrementQuantity, products } =
+const CartWidgetItem = ({ id, quantity }: CartWidgetItemProps) => {
+  const { removeItem, incrementQuantity, decrementQuantity }: ICartContext =
     useCartContext();
-
+  const { products } = useAppContext();
   //Checks the cart to see if the added item already exists.
-  const item = products.find((item) => item.product_id === id);
+  const item = products.find((item: IProduct) => item.product_id === id);
   if (item == null) return null;
 
   return (
@@ -24,18 +27,21 @@ const CartWidgetItem = ({ id, quantity } : CartWidgetItemProps) => {
       <div>
         <button
           className="b-2 btn-primary"
-          onClick={() => decrementQuantity(id)}
+          onClick={() => decrementQuantity(id, item.product_name)}
         >
           -
         </button>
         <span className="m-5">{quantity}</span>
         <button
           className="b-2 btn-primary"
-          onClick={() => incrementQuantity(id)}
+          onClick={() => incrementQuantity(id, item.product_name)}
         >
           +
         </button>
-        <button className="btn-danger" onClick={() => removeItem(id)}>
+        <button
+          className="btn-danger"
+          onClick={() => removeItem(id, item.product_name)}
+        >
           &times;
         </button>
       </div>

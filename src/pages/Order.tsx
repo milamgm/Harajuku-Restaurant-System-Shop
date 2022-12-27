@@ -5,22 +5,22 @@ import carousel from "../data/carousel.json";
 import { collection, onSnapshot } from "firebase/firestore";
 import db from "../firebase/firebaseConfig";
 import { useEffect } from "react";
-import { useCartContext } from "../context/UseStateContext";
-import { productProps } from "../types/types";
+import { useAppContext } from "../context/AppContext";
+import { IProduct } from "../types/types";
 
 type categorizedDataAcumProps = {
-  [key: string]: object[];
+  [key: string]: IProduct[] ;
 };
 
 const Order = () => {
-  const { products, setProducts } = useCartContext();
-
+  const { products, setProducts } = useAppContext();
+const initialData : categorizedDataAcumProps[] | [] = []
   //Group items by type in an array (associative) to display them.
-  const categorizedData = products.reduce(
-    (acc: categorizedDataAcumProps, curr: productProps) => {
-      const { product_category } = curr;
+  const categorizedData : categorizedDataAcumProps[] | [] = products.reduce(
+    (acc, curr) => {
+      const { product_category  } = curr;
       if (!acc[product_category]) {
-        acc[product_category] = [];
+        acc[product_category]  = [];
       }
       acc[product_category].push(
         Object.fromEntries(
@@ -31,9 +31,9 @@ const Order = () => {
       );
       return acc;
     },
-    []
+    initialData
   );
-
+  console.log(categorizedData)
   //Fetching Products from database.
   useEffect(() => {
     onSnapshot(collection(db, "products"), (snapshot) => {
@@ -72,13 +72,13 @@ const Order = () => {
           <div key={key} className="pt-5" id={key}>
             <h1 className="m-4 text-center">{key}</h1>
             <Row md={1} xs={1} lg={2} xl={3} className="g-3">
-              {categorizedData[key].map((item: productProps) => (
+              {categorizedData[key].map((product: IProduct) => (
                 <Container
                   className="mt-5"
-                  key={item.product_id}
-                  id={item.product_name}
+                  key={product.product_id}
+                  id={product.product_name}
                 >
-                  <StoreItem {...item} />
+                  <StoreItem product={product} />
                 </Container>
               ))}
             </Row>
