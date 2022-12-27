@@ -9,18 +9,18 @@ import { useAppContext } from "../context/AppContext";
 import { IProduct } from "../types/types";
 
 type categorizedDataAcumProps = {
-  [key: string]: IProduct[] ;
+  [key: string]: IProduct[];
 };
 
 const Order = () => {
   const { products, setProducts } = useAppContext();
-const initialData : categorizedDataAcumProps[] | [] = []
+
   //Group items by type in an array (associative) to display them.
-  const categorizedData : categorizedDataAcumProps[] | [] = products.reduce(
-    (acc, curr) => {
-      const { product_category  } = curr;
+  const categorizedData = products.reduce(
+    (acc: categorizedDataAcumProps[] | [], curr) => {
+      const { product_category } = curr;
       if (!acc[product_category]) {
-        acc[product_category]  = [];
+        acc[product_category] = [];
       }
       acc[product_category].push(
         Object.fromEntries(
@@ -31,9 +31,9 @@ const initialData : categorizedDataAcumProps[] | [] = []
       );
       return acc;
     },
-    initialData
+    []
   );
-  console.log(categorizedData)
+  console.log(categorizedData);
   //Fetching Products from database.
   useEffect(() => {
     onSnapshot(collection(db, "products"), (snapshot) => {
