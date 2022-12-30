@@ -32,7 +32,7 @@ const StoreItem = ({ product }: StoreItemProps) => {
   //Takes the quantity of the item if this exists in the cart.
   const quantity =
     cartItems.find((item: IItem) => item.id === product_id)?.quantity || null;
- 
+
   return (
     <Container>
       <Card key={product_id} className="h-100 shadow">
@@ -51,28 +51,23 @@ const StoreItem = ({ product }: StoreItemProps) => {
           <p>{product_description}</p>
           <div className="d-flex justify-content-center align-content-center">
             {quantity && quantity > 0 && (
-              <>
-                <Button
-                  className="b-2"
-                  onClick={() => decrementQuantity(product_id, product_name)}
-                >
-                  -
-                </Button>
-                <span className="m-5">{quantity}</span>
-                <Button
-                  className="b-2"
-                  onClick={() => incrementQuantity(product_id, product_name)}
-                >
-                  +
-                </Button>
-                <Button
-                  className="b-2"
-                  variant="outline-danger"
-                  onClick={() => removeItem(product_id, product_name)}
-                >
-                  &times;
-                </Button>
-              </>
+                 <div className="btn-area mt-1">
+                 <button onClick={() => decrementQuantity(product_id, product_name)}>
+                   -
+                 </button>
+                 <span className="m-5">
+                   {quantity}
+                 </span>
+                 <button onClick={() => incrementQuantity(product_id, product_name)}>
+                   +
+                 </button>
+                 <button
+                   className="danger-btn"
+                   onClick={() => removeItem(product_id, product_name)}
+                 >
+                   &times;
+                 </button>
+               </div>
             )}
 
             {quantity === null && (

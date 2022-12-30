@@ -18,8 +18,14 @@ const Context = createContext({} as ICartContext);
 const { waitingTime } = settings[0];
 
 export const UseStateContext = ({ children }: CartContextProps) => {
-  const { setCartContainer, products, orderId, onCookingItemsFetch, orderOnCookingTime } =
-    useAppContext();
+  const {
+    setCartContainer,
+    products,
+    orderId,
+    tableNum,
+    onCookingItemsFetch,
+    orderOnCookingTime,
+  } = useAppContext();
 
   const [cartItems, setCartItems] = useLocalStorage("cart-items", []); //Products currently in cart.
   const [orderAccepted, setOrderAccepted] = useState(false); //Boolean that is true when the products in cart had been sent to kitchen.
@@ -37,12 +43,12 @@ export const UseStateContext = ({ children }: CartContextProps) => {
   const intervalRef = useRef<NodeJS.Timer>();
 
   const date = new Date();
-  const [tableNum, setTableNum] = useLocalStorage("table_num", 0);
+
   const cartQuantity = cartItems.reduce((totalQty: number, currItem: IItem) => {
     return totalQty + currItem.quantity;
   }, 0);
 
-  //Adds items in the cart to the database; they will be displayed in the kitchen app.
+  //Adds cart items to the database (table activeOrders); they will be displayed in the kitchen app.
   const sendToKitchen = async () => {
     await setDoc(doc(db, "activeOrders", orderId), {
       order_id: orderId,
@@ -51,7 +57,7 @@ export const UseStateContext = ({ children }: CartContextProps) => {
       items: [...orderedItems],
     });
   };
-
+console.log(orderId)
   //--------------------------------------
   //array that contains the sum of products that have just been sent to kitchen + the products that are already
   //in the kitchen, this array is filled in the function "orderRound" and its necesary for update the "items" field in "activeOrders" table.
@@ -71,6 +77,10 @@ export const UseStateContext = ({ children }: CartContextProps) => {
         return accum;
       }, initialValueReducer);
     });
+    toast.success(
+      `${cartItems.length} product sent to kitchen! Soon they will be served at your table. 😋`,
+      { duration: 7000 }
+    );
     setCartItems([]);
     setOrderAccepted((prevstate) => !prevstate);
   };
@@ -80,8 +90,8 @@ export const UseStateContext = ({ children }: CartContextProps) => {
     setCartItems((prevCartItems: IItem[]) => {
       if (prevCartItems.find((item) => item.id === id)?.quantity == null) {
         //Product does not exists in cart yet
-        toast(`Added ${name} to cart`, {
-          duration: 1000,
+        toast.success(`Added ${name} to cart`, {
+          duration: 2000,
         });
         if (cartItems.length === 0) {
           setActiveCounter(true);
@@ -101,16 +111,20 @@ export const UseStateContext = ({ children }: CartContextProps) => {
         //Product already exists in cart
         return prevCartItems.map((item) => {
           if (item.id === id) {
-            toast(`x ${item.quantity + 1} ${item.name}`, { duration: 1000 });
+            toast.success(`x ${item.quantity + 1} ${item.name}`, { duration: 2000 });
             if (counter.minutes == 0 && counter.seconds < 30) {
-              setCounter((prev: {minutes: number, seconds: number}) => ({ ...prev, seconds: prev.seconds + 29 }));
+              setCounter((prev: { minutes: number; seconds: number }) => ({
+                ...prev,
+                seconds: prev.seconds + 29,
+              }));
             }
             return {
               ...item,
               quantity: item.quantity + 1,
               price:
-                products.find((product: IProduct ) => product.product_id === id)!.product_price *
-                (item.quantity + 1)
+                products.find((product: IProduct) => product.product_id === id)!
+                  .product_price *
+                (item.quantity + 1),
             };
           } else {
             return item;
@@ -125,12 +139,12 @@ export const UseStateContext = ({ children }: CartContextProps) => {
     setCartItems((prevCartItems: IItem[]) => {
       const exists = prevCartItems.find((item) => item.id === id);
       if (exists?.quantity == 1) {
-        toast(`Removed ${exists.name} from cart`, { duration: 1000 });
+        toast.success(`Removed ${exists.name} from cart`, { duration: 2000 });
         return prevCartItems.filter((item) => item.id != id);
       } else {
         return prevCartItems.map((item) => {
           if (item.id === id) {
-            toast(`x ${item.quantity - 1} ${name}`, { duration: 1000 });
+            toast.success(`x ${item.quantity - 1} ${name}`, { duration: 2000 });
             return {
               ...item,
               quantity: item.quantity - 1,
@@ -146,23 +160,29 @@ export const UseStateContext = ({ children }: CartContextProps) => {
     });
   };
   const removeItem = (id: number, name: string) => {
-    toast(
-      `Removed ${name} from cart`,
-      { duration: 1000 }
-    );
+    toast.success(`Removed ${name} from cart`, { duration: 2000 });
     setCartItems((prevCartItems: IItem[]) =>
       prevCartItems.filter((item) => item.id !== id)
     );
   };
-  console.log(setTableNum);
+
   //Activate Counter and send to Ordered-Items-Widget when finish.
   useEffect(() => {
     if (activeCounter && counter.minutes >= 0 && cartItems.length > 0) {
       intervalRef.current = setInterval(() => {
-        setCounter((prev : ICartContext["counter"] ) => ({ ...prev, seconds: prev.seconds - 1 }));
+        setCounter((prev: ICartContext["counter"]) => ({
+          ...prev,
+          seconds: prev.seconds - 1,
+        }));
         if (counter.seconds == 1) {
-          setCounter((prev: ICartContext["counter"] ) => ({ ...prev, minutes: prev.minutes - 1 }));
-          setCounter((prev: ICartContext["counter"] ) => ({ ...prev, seconds: 59 }));
+          setCounter((prev: ICartContext["counter"]) => ({
+            ...prev,
+            minutes: prev.minutes - 1,
+          }));
+          setCounter((prev: ICartContext["counter"]) => ({
+            ...prev,
+            seconds: 59,
+          }));
         }
       }, 1000);
     } else if (cartItems.length > 0) {
@@ -198,13 +218,29 @@ export const UseStateContext = ({ children }: CartContextProps) => {
     orderedItems,
     cartQuantity,
     counter,
-    setTableNum,
   };
 
   return (
     <Context.Provider value={values}>
       <div>
-        <Toaster />
+        <Toaster
+         position="top-right"
+          toastOptions={{
+            style: {
+              background: "#b4e3e1",
+            },
+            success: {
+              style: {
+                background: "#b2e6c5",
+              },
+            },
+            error: {
+              style: {
+                background: "red",
+              },
+            },
+          }}
+        />
       </div>
       {children}
     </Context.Provider>

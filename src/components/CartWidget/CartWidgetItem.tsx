@@ -1,4 +1,4 @@
-import { Stack } from "react-bootstrap";
+import { Alert, Card, Stack } from "react-bootstrap";
 import { useAppContext } from "../../context/AppContext";
 import { useCartContext } from "../../context/CartContext";
 import { ICartContext } from "../../types/contextTypes";
@@ -18,34 +18,32 @@ const CartWidgetItem = ({ id, quantity }: CartWidgetItemProps) => {
   if (item == null) return null;
 
   return (
-    <>
+    <div className="ms-3 mt-4">
       <Stack direction="horizontal" className="gap-2">
         <img src={item.product_img} alt={item.product_name} width={100} />
         <h4>{item.product_name}</h4>
-        <span className="muted-text"> x {quantity}</span>
+        <span className="muted-text">
+          <h4 className="text-muted"> x {quantity}</h4>
+        </span>
       </Stack>
-      <div>
-        <button
-          className="b-2 btn-primary"
-          onClick={() => decrementQuantity(id, item.product_name)}
-        >
+      <div className="btn-area mt-1">
+        <button onClick={() => decrementQuantity(id, item.product_name)}>
           -
         </button>
-        <span className="m-5">{quantity}</span>
-        <button
-          className="b-2 btn-primary"
-          onClick={() => incrementQuantity(id, item.product_name)}
-        >
+        <span className="m-5">
+          {quantity}
+        </span>
+        <button onClick={() => incrementQuantity(id, item.product_name)}>
           +
         </button>
         <button
-          className="btn-danger"
+          className="danger-btn"
           onClick={() => removeItem(id, item.product_name)}
         >
           &times;
         </button>
       </div>
-    </>
+    </div>
   );
 };
 

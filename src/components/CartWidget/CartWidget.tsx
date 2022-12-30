@@ -36,7 +36,7 @@ const CartWidget = () => {
         )}
         {cartItems.length > 0 && (
           <h5>
-            This order will be prepaired in {counter.minutes} :
+            This order will be sent to kitchen in {counter.minutes} :
             {counter.seconds < 10
               ? ` 0${counter.seconds}`
               : ` ${counter.seconds}`}{" "}
@@ -49,7 +49,7 @@ const CartWidget = () => {
           ))}
         {cartItems.length == 0 && (
           <h5 className="text-muted">
-            <i>Your cart is empty, add some fresh food here</i>
+            <i>Your cart is empty, add some dishes here.</i>
           </h5>
         )}
       </Modal.Body>

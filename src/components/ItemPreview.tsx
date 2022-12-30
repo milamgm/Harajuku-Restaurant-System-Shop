@@ -14,7 +14,6 @@ const ItemPreview = ({
 }: TpreviewItem) => {
   const { incrementQuantity, decrementQuantity, removeItem } = useCartContext();
 
-  console.log(product_id);
   return (
     <Container>
       <Modal
@@ -36,8 +35,7 @@ const ItemPreview = ({
         <Modal.Body className="show-item-body">
           <img
             src={product_img}
-            style={{ objectFit: "cover" }}
-            className="p-2"
+            className="p-2 w-100"
           />
           <p className="m-4">{product_description}</p>
           {quantity && quantity > 0 ? (
@@ -68,7 +66,6 @@ const ItemPreview = ({
               className="btn-primary"
               onClick={() => incrementQuantity(product_id, product_name)}
             >
-              {" "}
               + Add to Cart
             </button>
           )}

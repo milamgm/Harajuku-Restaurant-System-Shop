@@ -1,7 +1,7 @@
 import Order from "./Order";
 import { Container } from "react-bootstrap";
 import cookinggif from "../../public/imgs/cooking.gif";
-import see_my_items from "../../public/imgs/see_my_items.svg";
+import see_my_items from "../../public/imgs/orders.png";
 import basket from "../../public/imgs/basket.png";
 import { useCartContext } from "../context/CartContext";
 import OrderedItems from "../components/OrderedItemsWidget/OrderedItemsWidget";
@@ -15,12 +15,13 @@ const Layout = () => {
     setCartContainer,
     onCookingItemsFetch,
     completedItemsFetch,
+    setOpenDemoModal,
   } = useAppContext();
-  
+
   return (
     <div>
       <Order />
-      <Container className="g-5 mb-3">
+      <Container className=" g-5 mb-3">
         <div className="cart-btn-div">
           {cartItems.length > 0 && (
             <div
@@ -32,7 +33,7 @@ const Layout = () => {
           )}
           <button
             style={{ position: "fixed", bottom: 30, right: 150 }}
-            className={`cart-btn basket_btn  ${
+            className={`cart-btn basket_btn layout-btn  ${
               cartItems.length >= 1 ? "active_cart" : ""
             }`} //rounded-circle btn-lg
             onClick={() => {
@@ -46,7 +47,7 @@ const Layout = () => {
         {(onCookingItemsFetch.length > 0 || completedItemsFetch.length > 0) && (
           <button
             style={{ position: "fixed", bottom: 30, right: 50 }}
-            className="ordered-items-btn"
+            className="ordered-items-btn layout-btn"
             onClick={() => setOrderContainer((prev) => !prev)}
           >
             <img
@@ -61,6 +62,13 @@ const Layout = () => {
       {(onCookingItemsFetch.length > 0 || completedItemsFetch.length > 0) && (
         <OrderedItems />
       )}
+      <div
+        role="button"
+        className="reset-demo-btn"
+        onClick={() => setOpenDemoModal((prev) => !prev)}
+      >
+        Reset Demo
+      </div>
       <Footer />
     </div>
   );

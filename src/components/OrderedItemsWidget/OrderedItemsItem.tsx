@@ -20,7 +20,7 @@ const OrderedItemsItem = ({ id, quantity, cssClass } : OrderedItemsItemProps) =>
       direction="horizontal"
       className={`g-3 ${cssClass} d-flex justify-content-between me-5`}
     >
-      <img src={item!.product_img} alt={item!.product_name} width={100} />
+      <img className="me-2" src={item!.product_img} alt={item!.product_name} width={50} />
       <span className="me-1">{item!.product_name}</span>
       <span> x {quantity}</span>
     </Stack>

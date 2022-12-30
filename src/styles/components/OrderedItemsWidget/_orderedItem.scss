@@ -1,8 +1,0 @@
-@use "../../abstracts" as *;
-
-.onCooking-item{
-    @include orderedItem($primary, $secondary)
-}
-.completed-item{
-    @include orderedItem($secondary, $dark)
-}

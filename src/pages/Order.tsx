@@ -4,16 +4,17 @@ import { Container, Row, Carousel, Button } from "react-bootstrap";
 import carousel from "../data/carousel.json";
 import { collection, onSnapshot } from "firebase/firestore";
 import db from "../firebase/firebaseConfig";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppContext } from "../context/AppContext";
 import { IProduct } from "../types/types";
+import AppDemoModal from "../zz__demo__modal/AppDemoModal";
 
 type categorizedDataAcumProps = {
   [key: string]: IProduct[];
 };
 
 const Order = () => {
-  const { products, setProducts } = useAppContext();
+  const { products, setProducts, openDemoModal, setOpenDemoModal } = useAppContext();
 
   //Group items by type in an array (associative) to display them.
   const categorizedData = products.reduce(
@@ -33,7 +34,7 @@ const Order = () => {
     },
     []
   );
-  console.log(categorizedData);
+
   //Fetching Products from database.
   useEffect(() => {
     onSnapshot(collection(db, "products"), (snapshot) => {
@@ -59,9 +60,9 @@ const Order = () => {
               <Carousel.Caption>
                 <h3>{item.title}</h3>
                 <p>{item.description}</p>
-                <Button variant="info">
+                <button>
                   <a href={`#${item.title}`}>Go To Item</a>
-                </Button>
+                </button>
               </Carousel.Caption>
             </Carousel.Item>
           ))}
@@ -85,6 +86,10 @@ const Order = () => {
           </div>
         ))}
       </Container>
+      <AppDemoModal
+        openDemoModal={openDemoModal}
+        setOpenDemoModal={setOpenDemoModal}
+      />
     </>
   );
 };
