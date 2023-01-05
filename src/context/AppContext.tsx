@@ -43,7 +43,6 @@ export const UseLayoutContext = ({ children }: AppContextProps) => {
     ) {
       setOpenDemoModal(false);
     } else {
-      setOrderId(`AQ${Math.floor(Math.random() * 9000000)}`);
       setOpenDemoModal(true);
     }
   }, []);

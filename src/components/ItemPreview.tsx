@@ -40,26 +40,26 @@ const ItemPreview = ({
           <p className="m-4">{product_description}</p>
           {quantity && quantity > 0 ? (
             <>
-              <Button
+              <button
                 className="b-2"
                 onClick={() => decrementQuantity(product_id, product_name)}
               >
                 -
-              </Button>
+              </button>
               <span className="m-5">{quantity}</span>
-              <Button
+              <button
                 className="b-2"
                 onClick={() => incrementQuantity(product_id, product_name)}
               >
                 +
-              </Button>
-              <Button
-                className="b-2"
-                variant="outline-danger"
+              </button>
+              <button
+                className="b-2 danger-btn"
+              
                 onClick={() => removeItem(product_id, product_name)}
               >
                 &times;
-              </Button>
+              </button>
             </>
           ) : (
             <button

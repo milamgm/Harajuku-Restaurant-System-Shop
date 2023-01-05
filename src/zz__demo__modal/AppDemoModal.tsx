@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { Carousel, Modal } from "react-bootstrap";
 import { useAppContext } from "../context/AppContext";
 
@@ -19,7 +19,6 @@ const AppDemoModal = ({
 }: AppDemoModalProps) => {
   const { orderId, setOrderId, tableNum } = useAppContext();
   const carouselRefi = useRef<CarouselRef | null>(null);
-const [restartAppImg, setRestartAppImg ] = useState("./imgs/demoModalImgs/spinner.gif")
   const handleRestartApp = () => {
     setOrderId(`AQ${Math.floor(Math.random() * 9000000)}`);
     onNextClick();
@@ -44,7 +43,7 @@ const [restartAppImg, setRestartAppImg ] = useState("./imgs/demoModalImgs/spinne
       </Modal.Header>
       <Modal.Body>
         <Carousel
-        fade
+          fade
           interval={null}
           controls={false}
           indicators={false}
@@ -125,7 +124,15 @@ const [restartAppImg, setRestartAppImg ] = useState("./imgs/demoModalImgs/spinne
               >
                 Back
               </button>
-              <button style={{ width: "100px" }} onClick={onNextClick}>
+              <button
+                style={{ width: "100px" }}
+                onClick={() => {
+                  onNextClick();
+                  orderId === ""
+                    ? setOrderId(`AQ${Math.floor(Math.random() * 9000000)}`)
+                    : orderId;
+                }}
+              >
                 Next
               </button>
             </Carousel.Caption>
@@ -135,6 +142,7 @@ const [restartAppImg, setRestartAppImg ] = useState("./imgs/demoModalImgs/spinne
               className="d-block w-100"
               src="./imgs/demoModalImgs/ready.png"
             />
+            ds
             <Carousel.Caption>
               <h5 className="mb-4" style={{ backgroundColor: "#111111" }}>
                 If you want to reset the demo, click on the "reset demo" button.

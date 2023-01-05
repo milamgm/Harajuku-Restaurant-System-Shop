@@ -11,6 +11,16 @@ const NavBar = () => {
   const itemsCategory = new Set<string>(
     products.reduce((categories: string[], product: IProduct) => {
       categories.push(product.product_category);
+      //positions drinks and desserts at the end of the array
+      categories.sort((a, b) => {
+        if (a.includes('Dessert') || a.includes('Drink')) {
+          return 1;
+        }
+        if (b.includes('Dessert') || b.includes('Drink')) {
+          return -1;
+        }
+        return 0;
+      });
       return categories;
     }, [])
   );

@@ -4,7 +4,7 @@ import { Container, Row, Carousel, Button } from "react-bootstrap";
 import carousel from "../data/carousel.json";
 import { collection, onSnapshot } from "firebase/firestore";
 import db from "../firebase/firebaseConfig";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAppContext } from "../context/AppContext";
 import { IProduct } from "../types/types";
 import AppDemoModal from "../zz__demo__modal/AppDemoModal";
@@ -30,7 +30,22 @@ const Order = () => {
           )
         )
       );
-      return acc;
+      //positions drinks and desserts at the end of the array
+      const keys = Object.keys(acc);
+      keys.sort((a, b) => {
+        if (a.includes('Dessert') || a.includes('Drink')) {
+          return 1;
+        }
+        if (b.includes('Dessert') || b.includes('Drink')) {
+          return -1;
+        }
+        return 0;
+      });
+      const sortedProducts : categorizedDataAcumProps[] = [];
+      keys.forEach(key => {
+        sortedProducts[key] = acc[key];
+      });
+      return sortedProducts;
     },
     []
   );
