@@ -2,7 +2,7 @@ import { useContext, createContext, useState, useEffect, useRef } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import settings from "../data/settings.json";
 import useLocalStorage from "../hooks/useLocalStorage";
-import { setDoc, doc } from "firebase/firestore";
+import { setDoc, doc, serverTimestamp } from "firebase/firestore";
 import db from "../firebase/firebaseConfig.js";
 import { IItem, IProduct } from "../types/types";
 import { useAppContext } from "./AppContext";
@@ -41,9 +41,6 @@ export const UseStateContext = ({ children }: CartContextProps) => {
     cartItems.length > 0 ? true : false
   );
   const intervalRef = useRef<NodeJS.Timer>();
-
-  const date = new Date();
-
   const cartQuantity = cartItems.reduce((totalQty: number, currItem: IItem) => {
     return totalQty + currItem.quantity;
   }, 0);
@@ -53,11 +50,10 @@ export const UseStateContext = ({ children }: CartContextProps) => {
     await setDoc(doc(db, "activeOrders", orderId), {
       order_id: orderId,
       table_num: tableNum,
-      time: orderOnCookingTime === 0 ? date.getTime() : orderOnCookingTime,
+      time: orderOnCookingTime === 0 ? serverTimestamp() : orderOnCookingTime,
       items: [...orderedItems],
     });
   };
-console.log(orderId)
   //--------------------------------------
   //array that contains the sum of products that have just been sent to kitchen + the products that are already
   //in the kitchen, this array is filled in the function "orderRound" and its necesary for update the "items" field in "activeOrders" table.
@@ -217,6 +213,7 @@ console.log(orderId)
     orderAccepted,
     orderedItems,
     cartQuantity,
+    setCartItems,
     counter,
   };
 

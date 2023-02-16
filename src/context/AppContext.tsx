@@ -13,7 +13,7 @@ const Context = createContext({} as IAppContext);
 
 export const UseLayoutContext = ({ children }: AppContextProps) => {
   const [products, setProducts] = useState<IProduct[]>([]); //Array of available products (filled from database fetch)
-  const [tableNum, setTableNum] = useLocalStorage("table_num", 0); //Table number.
+  const [tableNum, setTableNum] = useLocalStorage("table_num", 1); //Table number.
   const [cartContainer, setCartContainer] = useState(false); //Toggles cart container
   const [orderContainer, setOrderContainer] = useState(false); //Toggles orders view container
   //Fetched data of the products that are currently in kitchen.
@@ -24,8 +24,8 @@ export const UseLayoutContext = ({ children }: AppContextProps) => {
 
   const [orderId, setOrderId] = useLocalStorage<string>("orderID", ""); //Contains a string for the order number.
   const [openDemoModal, setOpenDemoModal] = useState(true);
-
-  //Checks if a curtomer is in ordering process. (If not, the wellcome demo modal will be displayed and a new order id will be created)
+  //Checks if a customer is in ordering process. (If not, the wellcome demo modal will be displayed and a new order id will be created)
+  console.log(onCookingItemsFetch)
   useEffect(() => {
     let cartItems;
     try {
@@ -47,7 +47,7 @@ export const UseLayoutContext = ({ children }: AppContextProps) => {
     }
   }, []);
 
-  //Fetchs datafrom activeOrders and completedOrders.
+  //Fetchs data from activeOrders and completedOrders.
   useEffect(() => {
     if (orderId !== "") {
       try {

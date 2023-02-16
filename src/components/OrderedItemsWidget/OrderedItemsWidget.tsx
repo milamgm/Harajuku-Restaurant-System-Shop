@@ -28,10 +28,9 @@ const OrderedItemsWidget = () => {
               <Row className="mt-4">
                 {onCookingItemsFetch.length > 0 &&
                   onCookingItemsFetch.map((item: IItem) => (
-                    <Col sm="12" lg="6">
+                    <Col sm="12" lg="6" key={item.id}>
                       <Alert>
                         <OrderedItemsItem
-                          key={item.id}
                           {...item}
                           cssClass="onCooking-item"
                         />

@@ -18,6 +18,11 @@ export interface IProduct {
   product_name: string;
   product_price: number;
 }
+export interface ICarouselProduct {
+  product_description: string;
+  product_img: string;
+  product_name: string;
+}
 
 export type TpreviewItem = {
   previewItem : boolean,
