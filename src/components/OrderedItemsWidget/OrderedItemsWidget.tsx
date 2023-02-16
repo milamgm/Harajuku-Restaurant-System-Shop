@@ -28,17 +28,17 @@ const OrderedItemsWidget = () => {
               <Row className="mt-4">
                 {onCookingItemsFetch.length > 0 &&
                   onCookingItemsFetch.map((item: IItem) => (
-                    <Col sm="12" lg="6">
+                    <Col sm="12" lg="6" key={item.id}>
                       <Alert>
-                        <OrderedItemsItem
-                          key={item.id}
-                          {...item}
-                          cssClass="onCooking-item"
-                        />
+                        <OrderedItemsItem {...item} cssClass="onCooking-item" />
                       </Alert>
                     </Col>
                   ))}
-                  {onCookingItemsFetch.length === 0 && <h4 className="text-muted">No dishes are being prepared at the moment.</h4>}
+                {onCookingItemsFetch.length === 0 && (
+                  <h4 className="text-muted">
+                    No dishes are being prepared at the moment.
+                  </h4>
+                )}
               </Row>
             </Col>
             <Col sm="6">
@@ -46,7 +46,7 @@ const OrderedItemsWidget = () => {
               {completedItemsFetch.length > 0 && (
                 <Row className="mt-4 ">
                   {completedItemsFetch.map((item: IItem) => (
-                    <Col sm="12" lg="6">
+                    <Col sm="12" lg="6" key={item.id}>
                       <Alert variant="success">
                         <OrderedItemsItem
                           key={item.id}
@@ -58,7 +58,9 @@ const OrderedItemsWidget = () => {
                   ))}
                 </Row>
               )}
-              {completedItemsFetch.length === 0 && <h4 className="text-muted">No served dishes yet.</h4>}
+              {completedItemsFetch.length === 0 && (
+                <h4 className="text-muted">No served dishes yet.</h4>
+              )}
             </Col>
           </Row>
         </Offcanvas.Body>

@@ -7,6 +7,7 @@ export interface ICartContext {
   removeItem: (id: number, name: string) => void;
   orderAccepted: boolean;
   orderedItems: IItem[];
+  setCartItems: React.Dispatch<React.SetStateAction<IItem[]>>;
   cartQuantity: number;
   counter: { minutes: number; seconds: number };
 }
@@ -20,8 +21,8 @@ export interface IAppContext {
   setProducts: React.Dispatch<React.SetStateAction<IProduct[]>>;
   orderId: string;
   setOrderId: React.Dispatch<React.SetStateAction<string>>;
-  tableNum: number,
-  setTableNum:  React.Dispatch<React.SetStateAction<number>>,
+  tableNum: number;
+  setTableNum: React.Dispatch<React.SetStateAction<number>>;
   onCookingItemsFetch: IItem[];
   setCookingItemsFetch: React.Dispatch<React.SetStateAction<IItem[]>>;
   completedItemsFetch: IItem[];

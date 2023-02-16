@@ -1,12 +1,11 @@
 import NavBar from "../components/NavBar";
 import StoreItem from "../components/StoreItem";
-import { Container, Row, Carousel, Button } from "react-bootstrap";
-import carousel from "../data/carousel.json";
+import { Container, Row, Carousel } from "react-bootstrap";
 import { collection, onSnapshot } from "firebase/firestore";
 import db from "../firebase/firebaseConfig";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppContext } from "../context/AppContext";
-import { IProduct } from "../types/types";
+import { ICarouselProduct, IProduct } from "../types/types";
 import AppDemoModal from "../zz__demo__modal/AppDemoModal";
 
 type categorizedDataAcumProps = {
@@ -14,8 +13,11 @@ type categorizedDataAcumProps = {
 };
 
 const Order = () => {
-  const { products, setProducts, openDemoModal, setOpenDemoModal } = useAppContext();
-
+  const { products, setProducts, openDemoModal, setOpenDemoModal } =
+    useAppContext();
+  const [carouselProducts, setCarouselProducts] = useState<ICarouselProduct[]>(
+    []
+  );
   //Group items by type in an array (associative) to display them.
   const categorizedData = products.reduce(
     (acc: categorizedDataAcumProps[] | [], curr) => {
@@ -33,16 +35,16 @@ const Order = () => {
       //positions drinks and desserts at the end of the array
       const keys = Object.keys(acc);
       keys.sort((a, b) => {
-        if (a.includes('Dessert') || a.includes('Drink')) {
+        if (a.includes("Dessert") || a.includes("Drink")) {
           return 1;
         }
-        if (b.includes('Dessert') || b.includes('Drink')) {
+        if (b.includes("Dessert") || b.includes("Drink")) {
           return -1;
         }
         return 0;
       });
-      const sortedProducts : categorizedDataAcumProps[] = [];
-      keys.forEach(key => {
+      const sortedProducts: categorizedDataAcumProps[] = [];
+      keys.forEach((key) => {
         sortedProducts[key] = acc[key];
       });
       return sortedProducts;
@@ -50,13 +52,33 @@ const Order = () => {
     []
   );
 
-  //Fetching Products from database.
+  //Fetching Products from database and getting 3 random products to display in carousel.
   useEffect(() => {
     onSnapshot(collection(db, "products"), (snapshot) => {
       setProducts([]);
       snapshot.docs.forEach((doc) => {
-        setProducts((prevProducts: any) => [...prevProducts, doc.data()]);
+        const product = doc.data() as IProduct;
+        setProducts((prevProducts: IProduct[]) => [...prevProducts, product]);
       });
+      const carouselArr: ICarouselProduct[] = [];
+      while (carouselArr.length < 3) {
+        const randomProduct =
+          snapshot.docs[
+            Math.floor(Math.random() * snapshot.docs.length + 1)
+          ].data();
+        if (
+          !carouselArr.find(
+            (product) => product.product_name === randomProduct.product_name
+          )
+        ) {
+          carouselArr.push({
+            product_name: randomProduct.product_name,
+            product_img: randomProduct.product_img,
+            product_description: randomProduct.product_description,
+          });
+        }
+      }
+      setCarouselProducts(carouselArr);
     });
   }, []);
 
@@ -65,18 +87,21 @@ const Order = () => {
       <NavBar />
       <Container>
         <Carousel fade>
-          {carousel.map((item) => (
-            <Carousel.Item key={item.title}>
-              <img
-                className="d-block w-100"
-                src={item.imgUrl}
-                alt={item.title}
-              />
+          {carouselProducts.map((item) => (
+            <Carousel.Item key={item.product_name}>
+              <div className="carousel_background d-flex justify-content-center mh-25">
+                <img
+                  className="d-block"
+                  src={item.product_img}
+                  alt={item.product_name}
+                />
+              </div>
+
               <Carousel.Caption>
-                <h3>{item.title}</h3>
-                <p>{item.description}</p>
+                <h3>{item.product_name}</h3>
+                <p>{item.product_description}</p>
                 <button>
-                  <a href={`#${item.title}`}>Go To Item</a>
+                  <a href={`#${item.product_name}`}>Go To Item</a>
                 </button>
               </Carousel.Caption>
             </Carousel.Item>

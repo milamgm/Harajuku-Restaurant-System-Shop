@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { Carousel, Modal } from "react-bootstrap";
 import { useAppContext } from "../context/AppContext";
+import { useCartContext } from "../context/CartContext";
 
 type AppDemoModalProps = {
   openDemoModal: boolean;
@@ -17,10 +18,13 @@ const AppDemoModal = ({
   openDemoModal,
   setOpenDemoModal,
 }: AppDemoModalProps) => {
-  const { orderId, setOrderId, tableNum } = useAppContext();
+  const { orderId, setOrderId, tableNum, setTableNum } = useAppContext();
+  const { setCartItems } = useCartContext();
   const carouselRefi = useRef<CarouselRef | null>(null);
   const handleRestartApp = () => {
     setOrderId(`AQ${Math.floor(Math.random() * 9000000)}`);
+    setTableNum(Math.floor(Math.random() * 12));
+    setCartItems([]);
     onNextClick();
   };
 

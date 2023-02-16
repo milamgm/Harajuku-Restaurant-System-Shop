@@ -91,7 +91,14 @@ footer .qrcode {
     opacity: 100%;
   }
 }
-
+.carousel_background{
+  background-color: #ac6400;
+  height: 450px;
+  object-fit: cover;
+  background-image: url("../public/imgs/wood.jpg");
+  padding: 50px;
+  background-size: cover;
+}
 
 @font-face {
   font-family: "OnsenJapan";
