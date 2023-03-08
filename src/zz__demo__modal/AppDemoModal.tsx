@@ -38,7 +38,6 @@ const AppDemoModal = ({
   return (
     <Modal
       show={openDemoModal}
-  
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
@@ -47,7 +46,6 @@ const AppDemoModal = ({
       </Modal.Header>
       <Modal.Body>
         <Carousel
-          fade
           interval={null}
           controls={false}
           indicators={false}
