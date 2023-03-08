@@ -5,8 +5,8 @@ button {
   color: white;
   margin: 5px;
   border-radius: 5px;
-  transition: all .3s ease;
-  &:hover{
+  transition: all 0.3s ease;
+  &:hover {
     transform: scale(1.08);
   }
 }
@@ -16,14 +16,11 @@ button {
 .layout-btn {
   width: 90px;
   background-color: rgb(84, 197, 200);
-  @media screen and (max-width: 400px) {
-    width: 50px;
+  img {
+    width: 80%;
   }
-img{
-  width: 100%;
 }
-}
-.logo{
+.logo {
   font-family: "OnsenJapan", Tahoma, Geneva, Verdana, sans-serif;
   color: #d7260e;
   font-size: 1.4rem;
@@ -55,16 +52,16 @@ footer {
   background: #171a1a;
   color: rgb(240, 240, 240);
   padding: 2rem 0rem;
-  @media screen and (max-width: 400px) {
-   padding-bottom: 100px;
+  @media screen and (max-width: 700px) {
+    padding-bottom: 120px;
   }
 }
 footer .qrcode {
   -webkit-filter: invert(1);
   filter: invert(1);
 }
-.reset-demo-btn{
-  position: fixed ;
+.reset-demo-btn {
+  position: fixed;
   left: 0;
   bottom: 0;
   border-radius: 0px 10px 0px 0px;
@@ -91,13 +88,27 @@ footer .qrcode {
     opacity: 100%;
   }
 }
-.carousel_background{
+
+.carousel_background {
   background-color: #ac6400;
   height: 450px;
   object-fit: cover;
   background-image: url("../public/imgs/wood.jpg");
   padding: 50px;
   background-size: cover;
+}
+.carousel-item{
+  min-height: 500px;
+}
+.carousel-caption {
+
+  h5 {
+    color: #171a1a;
+    @media screen and (max-width: 700px) {
+      font-size: 1rem;
+
+    }
+  }
 }
 
 @font-face {

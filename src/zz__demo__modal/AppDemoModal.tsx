@@ -38,7 +38,7 @@ const AppDemoModal = ({
   return (
     <Modal
       show={openDemoModal}
-      size="lg"
+  
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
@@ -60,7 +60,7 @@ const AppDemoModal = ({
                 src="./imgs/demoModalImgs/restart.png"
               />
               <Carousel.Caption>
-                <h5 className="mb-4" style={{ backgroundColor: "#111111" }}>
+                <h5 className="mb-4">
                   Are you sure you want to restart the app?
                 </h5>
                 <button onClick={() => setOpenDemoModal(false)}>No</button>
@@ -74,7 +74,7 @@ const AppDemoModal = ({
               src="./imgs/demoModalImgs/tablet.png"
             />
             <Carousel.Caption>
-              <h5 className="mb-4" style={{ backgroundColor: "#111111" }}>
+              <h5 className="mb-4">
                 Welcome to the demo of the restaurant app for customers. Each
                 restaurant table would be equipped with tablets where customers
                 can place their orders directly from this app. Orders will be
@@ -95,7 +95,7 @@ const AppDemoModal = ({
               src="./imgs/demoModalImgs/cart.png"
             />
             <Carousel.Caption>
-              <h5 className="mb-4" style={{ backgroundColor: "#111111" }}>
+              <h5 className="mb-4">
                 The products you add to the cart will be automatically sent to
                 the kitchen after a stipulated time (for demo 15 secs); if you
                 keep adding items, the time may increase (till max. 50 secs).
@@ -117,7 +117,7 @@ const AppDemoModal = ({
               src="./imgs/demoModalImgs/buttons.png"
             />
             <Carousel.Caption>
-              <h5 className="mb-5" style={{ backgroundColor: "#111111" }}>
+              <h5 className="mb-5">
                 You can check the items in your cart as well as the panel of
                 items in the kitchen and served items, by clicking on the two
                 buttons on the bottom right hand side of the screen.
@@ -146,9 +146,8 @@ const AppDemoModal = ({
               className="d-block w-100"
               src="./imgs/demoModalImgs/ready.png"
             />
-            ds
             <Carousel.Caption>
-              <h5 className="mb-4" style={{ backgroundColor: "#111111" }}>
+              <h5 className="mb-4">
                 If you want to reset the demo, click on the "reset demo" button.
                 <br /> <br /> Your order id is : {orderId} <br />
                 Your table number is : {tableNum}
