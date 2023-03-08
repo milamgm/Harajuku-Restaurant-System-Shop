@@ -25,12 +25,6 @@ img{
   color: #d7260e;
   font-size: 1.4rem;
   margin-top: 15px;
-  span{
-    @media screen and (max-width: 800px) {
-  display: none;
-    }
-  }
-
 }
 .cart-item-counter {
   background-color: #d7260e;

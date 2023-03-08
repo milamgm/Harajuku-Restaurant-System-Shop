@@ -3,9 +3,13 @@ import CartWidget from "./CartWidget/CartWidget";
 import { HashLink as Link } from "react-router-hash-link";
 import { IProduct } from "../types/types";
 import { useAppContext } from "../context/AppContext";
+import { useState } from "react";
 
 const NavBar = () => {
   const { products } = useAppContext();
+  const [expanded, setExpanded] = useState(false);
+
+  const handleSelect = () => setExpanded(false);
 
   //Creates an array with the product categories. Then create a set with it to eliminate duplicates.
   const itemsCategory = new Set<string>(
@@ -13,10 +17,10 @@ const NavBar = () => {
       categories.push(product.product_category);
       //positions drinks and desserts at the end of the array
       categories.sort((a, b) => {
-        if (a.includes('Dessert') || a.includes('Drink')) {
+        if (a.includes("Dessert") || a.includes("Drink")) {
           return 1;
         }
-        if (b.includes('Dessert') || b.includes('Drink')) {
+        if (b.includes("Dessert") || b.includes("Drink")) {
           return -1;
         }
         return 0;
@@ -26,16 +30,26 @@ const NavBar = () => {
   );
 
   return (
-    <>
-      <Navbar sticky="top" className="bg-white shadow-sm mb-3 ps-3 pe-3">
-        <div className="logo">H<span>arajuku</span> </div>
-        <Container className="d-flex aligns-items-center justify-content-center">
-          <Nav>
+    <Navbar
+      sticky="top"
+      className="bg-white shadow-sm mb-3 ps-3 pe-3"
+      expand="md"
+      expanded={expanded}
+    >
+      <div className="logo">Harajuku </div>
+      <Navbar.Toggle
+        aria-controls="basic-navbar-nav"
+        onClick={() => setExpanded((prev) => !prev)}
+      />
+      <Navbar.Collapse id="basic-navbar-nav" onSelect={handleSelect}>
+        <Container>
+          <Nav className="me-auto justify-content-center">
             {[...itemsCategory].map((category) => (
               <Nav.Link
                 as={Link}
                 key={category}
                 to={{ pathname: "/", hash: `#${category}` }}
+                onClick={() => setExpanded(false)}
               >
                 {category}
               </Nav.Link>
@@ -43,8 +57,8 @@ const NavBar = () => {
           </Nav>
           <CartWidget />
         </Container>
-      </Navbar>
-    </>
+      </Navbar.Collapse>
+    </Navbar>
   );
 };
 
