@@ -16,6 +16,9 @@ button {
 .layout-btn {
   width: 90px;
   background-color: rgb(84, 197, 200);
+  @media screen and (max-width: 400px) {
+    width: 50px;
+  }
 img{
   width: 100%;
 }
@@ -52,6 +55,9 @@ footer {
   background: #171a1a;
   color: rgb(240, 240, 240);
   padding: 2rem 0rem;
+  @media screen and (max-width: 400px) {
+   padding-bottom: 100px;
+  }
 }
 footer .qrcode {
   -webkit-filter: invert(1);
